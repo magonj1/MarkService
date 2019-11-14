@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Mark {
 
 	@Id
-	private ObjectId Mark_id;
+	private String markId;
 	private String studentId;
 	private String subjectId;
 	@Field("markDate")
@@ -28,11 +28,11 @@ public class Mark {
 		this.markValue = markValue;
 	}
 	
-	public ObjectId getMark_id() {
-		return Mark_id;
+	public String getMark_id() {
+		return markId;
 	}
-	public void setMark_id(ObjectId mark_id) {
-		Mark_id = mark_id;
+	public void setMark_id(String markId) {
+		this.markId = markId;
 	}
 	public String getStudent_id() {
 		return studentId;
@@ -61,7 +61,7 @@ public class Mark {
 
 	@Override
 	public String toString() {
-		return "Mark [Mark_id=" + Mark_id + ", student_id=" + studentId + ", subject_id=" + subjectId + ", markDate="
+		return "Mark [Mark_id=" + markId + ", student_id=" + studentId + ", subject_id=" + subjectId + ", markDate="
 				+ markDate + ", markValue=" + markValue + "]";
 	}
 	

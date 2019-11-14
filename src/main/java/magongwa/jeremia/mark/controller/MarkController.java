@@ -3,10 +3,20 @@ package magongwa.jeremia.mark.controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import magongwa.jeremia.mark.model.Mark;
@@ -14,48 +24,56 @@ import magongwa.jeremia.mark.service.MarkService;
 
 
 
+@CrossOrigin(origins = {"http://localhost:4200"},maxAge = 4800, allowedHeaders = "*",allowCredentials = "false")
 @RestController
+@RequestMapping(path = "Api/Mark")
 public class MarkController {
 
 	@Autowired
 	private MarkService markService;
 	
-	@RequestMapping("/create")
-	public String Create(@RequestParam String student_id,@RequestParam String subject_id ,@RequestParam String markDate ,@RequestParam int markValue )
-	{
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-		LocalDate localDate = LocalDate.parse(markDate, formatter);
-		Mark mark  = markService.create( student_id,  subject_id, localDate, markValue);
-	
-		return mark.toString();
-	}
-	@RequestMapping("/getAll")
-	public List<Mark> getMarks()
-	{
-		return markService.getAll();
-	}
-	@RequestMapping("/get")
-	public Mark getMark(@RequestParam String studentId)
-	{
-		return markService.getByStudentId(studentId);
-	}
-	@RequestMapping("/update")
-	public String update(@RequestParam String studentId,@RequestParam int markValue)
-	{
-		return markService.update(studentId,markValue).toString();
-	}
-	@RequestMapping("/delete")
-	public String delete(@RequestParam String studentId)
-	{
-		markService.delete(studentId);
-		return "Deleted "+studentId;
-	}
-	@RequestMapping("/deleteAll")
-	public String deleteAll()
-	{
-		markService.deleteAll();
-		return "Deleted all the Records";
-	}
+	 @GetMapping
+	    public ResponseEntity<List<Mark>> findAll() {
+	        return ResponseEntity.ok(markService.findAll());
+	    }
+
+	    @PostMapping
+	    public ResponseEntity create(@Valid @RequestBody Mark product) {
+	        return ResponseEntity.ok(markService.save(product));
+	    }
+
+	    @GetMapping("/{id}")
+	    public ResponseEntity<Mark> findById(@PathVariable String id) {
+	        Optional<Mark> mark = markService.findById(id);
+	        if (!mark.isPresent()) {
+	           
+	            ResponseEntity.badRequest().build();
+	        }
+
+	        return ResponseEntity.ok(mark.get());
+	    }
+
+	    @PutMapping("/{id}")
+	    public ResponseEntity<Mark> update(@PathVariable String id, @Valid @RequestBody Mark product) {
+	        if (!markService.findById(id).isPresent()) {
+	       
+	            ResponseEntity.badRequest().build();
+	        }
+
+	        return ResponseEntity.ok(markService.save(product));
+	    }
+
+	    @DeleteMapping("/{id}")
+	    public ResponseEntity delete(@PathVariable String id) {
+	        if (!markService.findById(id).isPresent()) {
+	           
+	            ResponseEntity.badRequest().build();
+	        }
+
+	        markService.deleteById(id);
+
+	        return ResponseEntity.ok().build();
+	    }
 	
 	
 }

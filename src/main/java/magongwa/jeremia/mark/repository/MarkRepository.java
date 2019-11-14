@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MarkRepository extends MongoRepository<Mark,ObjectId> {
+public interface MarkRepository extends MongoRepository<Mark,String> {
 
 	public  Mark findByStudentId(String studentId);
 	public  Mark findBySubjectId(String subjectId);
